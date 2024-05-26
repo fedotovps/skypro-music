@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import styles from "./Filter.module.css";
 import { Track } from "../Centerblock/Centerblock.types";
-import { log } from "console";
 
 type FilterProps = {
   tracksList: Track[];
@@ -61,9 +60,7 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
       <div className={styles.filter__title}>Искать по:</div>
       <div
         className={styles.filter__button}
-        onClick={() => {
-          handleExecutors();
-        }}
+        onClick={handleExecutors}
         style={{
           borderColor: toggleExecutors ? "#B672FF" : "white",
           color: toggleExecutors ? "#B672FF" : "white",
@@ -73,9 +70,7 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
       </div>
       <div
         className={styles.filter__button}
-        onClick={() => {
-          handleYears();
-        }}
+        onClick={handleYears}
         style={{
           borderColor: toggleYears ? "#B672FF" : "white",
           color: toggleYears ? "#B672FF" : "white",
@@ -85,9 +80,7 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
       </div>
       <div
         className={styles.filter__button}
-        onClick={() => {
-          handleGenres();
-        }}
+        onClick={handleGenres}
         style={{
           borderColor: toggleGenres ? "#B672FF" : "white",
           color: toggleGenres ? "#B672FF" : "white",

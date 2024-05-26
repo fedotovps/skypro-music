@@ -10,6 +10,7 @@
   -ms-flex-align: center;
   align-items: center;
   margin-bottom: 51px;
+  position: relative;
 }
 
 .filter__title {
@@ -47,8 +48,8 @@
   row-gap: 24px;
   overflow: auto;
   position: absolute;
-  top: 288px;
-  left: 456px;
+  top: 48px;
+  left: 101px;
 }
 
 .years__modal {
@@ -62,8 +63,8 @@
   row-gap: 24px;
   overflow: auto;
   position: absolute;
-  top: 288px;
-  left: 618px;
+  top: 48px;
+  left: 265px;
 }
 
 .genres__modal {
@@ -78,8 +79,8 @@
   row-gap: 24px;
   overflow: auto;
   position: absolute;
-  top: 288px;
-  left: 781px;
+  top: 48px;
+  left: 426px;
 }
 
 .modal_el {
