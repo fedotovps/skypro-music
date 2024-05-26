@@ -9,7 +9,7 @@ type FilterProps = {
 
 export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
   // Состояние для фильтрации по исполнителям
-  const [toggleExecutors, setToggleExecutors] = React.useState<boolean>(false);
+  const [toggleExecutors, setToggleExecutors] = useState(false);
 
   // С помощью Set создаем множество с уникальными значениями author
   const unicExecutors = [
@@ -28,7 +28,7 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
   };
 
   // Состояние для фильтрации по годам
-  const [toggleYears, setToggleYears] = React.useState<boolean>(false);
+  const [toggleYears, setToggleYears] = useState(false);
 
   // Функция для изменения состояния по клику на фильтрацию по годам
   const handleYears = () => {
@@ -38,7 +38,7 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
   };
 
   // Состояние для фильтрации по жанрам
-  const [toggleGenres, setToggleGenres] = React.useState<boolean>(false);
+  const [toggleGenres, setToggleGenres] = useState(false);
 
   const unicGenres = [
     ...new Set(
