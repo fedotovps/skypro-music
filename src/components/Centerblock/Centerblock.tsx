@@ -1,28 +1,18 @@
 "use client";
-import { getTracks } from "@/api/tracksApi";
 import { Filter } from "../Filter/Filter";
 import { Search } from "../Search/Search";
 import styles from "./Centerblock.module.css";
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
-import { log } from "console";
-import { Track } from "./Centerblock.types";
+import { Track } from "../Main/Main.types";
+import React from "react";
 
-export const Centerblock = () => {
-  // Создаем состояние для списка треков
-  const [tracksList, setTracksList] = React.useState<Track[]>([]);
+type Centerblock = {
+  tracks: Track[];
+  setCurrentTrack: Function;
+  setCurrentTrackId: Function;
+};
 
-  // Выводим треки при загрузке странциы
-  useEffect(() => {
-    getTracks()
-      .then((response) => {
-        setTracksList(response);
-      })
-      .catch((error) => {
-        console.error(error.message);
-      });
-  }, []);
-
+export const Centerblock : React.FC<Centerblock> = ( {tracks, setCurrentTrack, setCurrentTrackId} ) => {
   // Функция конвертации секунд в формат с минутами
 
   const convertSecondsToTime = (seconds: number): string => {
@@ -32,12 +22,12 @@ export const Centerblock = () => {
     return time;
   };
 
-  console.log(tracksList);
+  //console.log(tracksList);
   return (
     <div className={styles.main__centerblock}>
       <Search />
       <h2 className={styles.centerblock__h2}>Треки</h2>
-      <Filter tracksList={tracksList} />
+      <Filter tracksList={tracks} />
       <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={clsx(styles.playlist_title__col, styles.col01)}>
@@ -56,9 +46,9 @@ export const Centerblock = () => {
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {tracksList.map((track) => {
+          {tracks.map((track, index) => {
             return (
-              <div key={track.id} className={styles.playlist__item}>
+              <div onClick={() => {setCurrentTrack(track); setCurrentTrackId(index)}} key={track.id} className={styles.playlist__item}>
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
                     <div className={styles.track__title_image}>
@@ -67,7 +57,7 @@ export const Centerblock = () => {
                       </svg>
                     </div>
                     <div className={styles.track__title_text}>
-                      <a className={styles.track__title_link} href="http://">
+                      <a className={styles.track__title_link}>
                         {track.name}
                         <span className={styles.track__title_span}></span>
                       </a>
