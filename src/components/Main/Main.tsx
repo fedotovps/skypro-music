@@ -13,8 +13,8 @@ type Main = {
 }
 
 export const Main = ( {tracks} : Main ) => {
-  // Создаем состояние для текущего трека
-  const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
+  // Вытаскиваем состояние текущего трека
+  const currentTrack = useAppSelector((state) => state.player.currentTrack);
   // Состояние для ID текущего трека
   const [currentTrackId, setCurrentTrackId] = useState(0);
 
@@ -26,10 +26,10 @@ export const Main = ( {tracks} : Main ) => {
         <main className={styles.main}>
           {/* <div>{authState ? "Авторизован" : "Не авторизован"}</div> */}
           <Menu />
-          <Centerblock tracks={tracks} setCurrentTrack={setCurrentTrack} setCurrentTrackId={setCurrentTrackId} />
+          <Centerblock tracks={tracks} />
           <Sidebar />
         </main>
-        {currentTrack && <Player tracks={tracks} currentTrack={currentTrack} setCurrentTrack={setCurrentTrack} currentTrackId={currentTrackId} setCurrentTrackId={setCurrentTrackId} />}
+        {currentTrack && <Player />}
         <footer className={styles.footer}></footer>
       </div>
     </div>

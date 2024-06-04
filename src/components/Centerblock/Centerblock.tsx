@@ -5,16 +5,25 @@ import styles from "./Centerblock.module.css";
 import clsx from "clsx";
 import { Track } from "../Main/Main.types";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentTrack, setTracks } from "@/store/features/playerSlice";
+import { useAppSelector } from "@/store/store";
 
 type Centerblock = {
   tracks: Track[];
-  setCurrentTrack: Function;
-  setCurrentTrackId: Function;
 };
 
-export const Centerblock : React.FC<Centerblock> = ( {tracks, setCurrentTrack, setCurrentTrackId} ) => {
-  // Функция конвертации секунд в формат с минутами
+export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
 
+  const dispatch = useDispatch();
+  // Вытаскивает текущий трек из глобального состояния
+  const currentTrack = useAppSelector((state) => state.player.currentTrack);
+  // Вытаскиваем состояние проигрывания из глобального состояния
+  const isPlaying = useAppSelector((state) => state.player.isPlaying);
+  // Вытаскивает текущий плейлист из глобального состояния
+  const currentTrackList = useAppSelector((state) => state.player.tracks);
+
+  // Функция конвертации секунд в формат с минутами
   const convertSecondsToTime = (seconds: number): string => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
@@ -22,7 +31,9 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks, setCurrentTrack, s
     return time;
   };
 
-  //console.log(tracksList);
+
+
+  console.log(currentTrackList);
   return (
     <div className={styles.main__centerblock}>
       <Search />
@@ -46,15 +57,15 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks, setCurrentTrack, s
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {tracks.map((track, index) => {
+          {tracks.map((track) => {
             return (
-              <div onClick={() => {setCurrentTrack(track); setCurrentTrackId(index)}} key={track.id} className={styles.playlist__item}>
+              <div onClick={() => {dispatch(setCurrentTrack(track)), dispatch(setTracks(tracks))}} key={track.id} className={styles.playlist__item}>
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
                     <div className={styles.track__title_image}>
-                      <svg className={styles.track__title_svg}>
+                      {track.id === currentTrack?.id ? <div className={clsx(styles.playing_dot, isPlaying ? styles.playing_dot_animation : null)}></div> : <svg className={styles.track__title_svg}>
                         <use href="img/icon/sprite.svg#icon-note"></use>
-                      </svg>
+                      </svg>}
                     </div>
                     <div className={styles.track__title_text}>
                       <a className={styles.track__title_link}>

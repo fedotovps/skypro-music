@@ -4,25 +4,30 @@ import styles from "./Player.module.css";
 import clsx from "clsx";
 import { ProgressBar } from "../ProgressBar/ProgressBar";
 import { Track } from "../Main/Main.types";
-import { trace } from "console";
+import { useAppSelector } from "@/store/store";
+import { useDispatch } from "react-redux";
+import { setCurrentTrack, setIsPlaying, setIsShuffle, setTracks } from "@/store/features/playerSlice";
 
-type Player = {
-  tracks: Track[];
-  currentTrack: Track;
-  setCurrentTrack: Function;
-  currentTrackId: number;
-  setCurrentTrackId: Function;
-};
-
-export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrack, currentTrackId, setCurrentTrackId} ) => {
+export const Player = () => {
 
   // Получаем ссылку на DOM-элемент audio
   const audioRef = useRef<HTMLAudioElement>(null);
   const audio = audioRef.current;
 
-  
-  // Состояние плеера
-  const [isPlaying, setIsPlaying] = useState(false);
+  const dispatch = useDispatch();
+
+  // Вытаскивает текущий плейлист из глобального состояния
+  const currentTrackList = useAppSelector((state) => state.player.tracks);
+  // Вытаскиваем состояние текущего трека
+  const currentTrack = useAppSelector((state) => state.player.currentTrack); 
+  // Находим индекс текущего трека
+  const currentTrackIndex = currentTrackList.findIndex((track) => track.id === currentTrack?.id);  
+  // Состояние плеера из глобального состояния
+  const isPlaying = useAppSelector((state) => state.player.isPlaying);
+  // Состояние режима перемешивания из глобального состояния
+  const isShuffle = useAppSelector((state) => state.player.isShuffle);
+
+
   // Состояние громкости
   const [isVolume, setIsVolume] = useState("0.5");
   // Состояние текущего времени
@@ -32,19 +37,10 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
 
   const duration: number = audio?.duration || 0;
   audio ? audio.loop = isLoop : null;
-
- 
   
   // Функция для переключения следующего трека
   const handleEnded = () => {
-    // if (currentTrackId < tracks.length - 1) {
-    //   if (!isLoop) {
-    //     setCurrentTrackId(currentTrackId + 1);
-    //     setCurrentTrack(tracks[currentTrackId])
-    //   }
-    // } else {
-    //   setCurrentTrackId(0);
-    // }
+    nextTrackClick();
   }
 
   // Функция зацикливания трека
@@ -52,6 +48,13 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
     setIsLoop(!isLoop);
   }
 
+  // Функция для включения режима перемешивания
+  const toggleShuffle = () => {
+    dispatch(setIsShuffle(!isShuffle));
+    // const shuffleTrackList = currentTrackList.sort(() => 0.5 - Math.random());
+    // dispatch(setTracks(shuffleTrackList));
+  }
+  
   // Функция для воспроизведения и остановки трека
   const togglePlay = () => {
     if (audio) {
@@ -61,29 +64,23 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
         audio.play();
       }
     }
-    setIsPlaying(!isPlaying);
+    dispatch(setIsPlaying(!isPlaying));
   }
 
   // Функция для воспроизведения следующего трека
-  const nextTrack = () => {
-    setCurrentTrackId((prevCurrentTrackId : number) => prevCurrentTrackId + 1);
-    setCurrentTrack(tracks[currentTrackId]);
-    if (isPlaying) {
-      audio?.play();
+  const nextTrackClick = () => {
+    if (currentTrackIndex < currentTrackList.length - 1) {
+      const nextTrack = currentTrackList[currentTrackIndex + 1];
+      dispatch(setCurrentTrack(nextTrack));
     }
-  }
+}
 
   // Функция для воспроизведения предыдущего трека
-  const prevTrack = () => {
-    setCurrentTrackId(currentTrackId - 1);
-    setCurrentTrack(tracks[currentTrackId]);
-    if (isPlaying) {
-      audio?.play();
+  const prevTrackClick = () => {
+    if (currentTrackIndex !== 0) {
+      const prevTrack = currentTrackList[currentTrackIndex - 1];
+      dispatch(setCurrentTrack(prevTrack));
     }
-  }
-
-  const notDone = () => {
-    alert("Еще не реализовано");
   }
 
   // Меняем громкость при изменении ползунка громкости
@@ -93,16 +90,18 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
     }
   }, [isVolume]);
 
-  useEffect(() => {
-    audio?.addEventListener("ended", handleEnded);
-    isPlaying ? audio?.play() : null;
-    return () => audio?.removeEventListener("ended", handleEnded);
-  }, [currentTrackId, tracks])
+  // useEffect(() => {
+  //   audio?.addEventListener("ended", handleEnded);
+  //   isPlaying ? audio?.play() : null;
+  //   return () => audio?.removeEventListener("ended", handleEnded);
+  // }, [currentTrackId, tracks])
 
   useEffect(() => {
     const audio = audioRef.current;
-    setIsPlaying(true);
+    audio?.addEventListener("ended", handleEnded);
+    dispatch(setIsPlaying(true));
     audio?.play();
+    return () => audio?.removeEventListener("ended", handleEnded);
   }, [currentTrack])
 
   
@@ -111,7 +110,7 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
           <audio 
             ref={audioRef}
             onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-            src={currentTrack.track_file}
+            src={currentTrack?.track_file}
           />
           <div className={styles.bar__content}>
             <ProgressBar currentTime={currentTime} duration={duration} audioRef={audioRef.current} />
@@ -119,7 +118,7 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
               <div className={styles.bar__player}>
                 <div className={styles.player__controls}>
                   <div className={styles.player__btn_prev}>
-                    <svg onClick={prevTrack} className={clsx(styles.player__btn_prev_svg, styles._btn)}>
+                    <svg onClick={prevTrackClick} className={clsx(styles.player__btn_prev_svg, styles._btn)}>
                       <use href="img/icon/sprite.svg#icon-prev"></use>
                     </svg>
                   </div>
@@ -129,7 +128,7 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
                     </svg>
                   </div>
                   <div className={styles.player__btn_next}>
-                    <svg onClick={nextTrack} className={clsx(styles.player__btn_next_svg, styles._btn)}>
+                    <svg onClick={nextTrackClick} className={clsx(styles.player__btn_next_svg, styles._btn)}>
                       <use href="img/icon/sprite.svg#icon-next"></use>
                     </svg>
                   </div>
@@ -139,7 +138,7 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
                     </svg>
                   </div>
                   <div className={clsx(styles.player__btn_shuffle, styles._btn_icon)}>
-                    <svg className={styles.player__btn_shuffle_svg}>
+                    <svg onClick={toggleShuffle} className={clsx(styles.player__btn_shuffle_svg, isShuffle ? styles.player__btn_shuffle_svg_active : null )}>
                       <use href="img/icon/sprite.svg#icon-shuffle"></use>
                     </svg>
                   </div>
@@ -154,10 +153,10 @@ export const Player : React.FC<Player> = ( {tracks, currentTrack, setCurrentTrac
                     </div>
                     <div className={styles.track_play__author}>
                       <a className={styles.track_play__author_link} href="http://"
-                        >{currentTrack.name}</a>
+                        >{currentTrack?.name}</a>
                     </div>
                     <div className={styles.track_play__album}>
-                      <a className={styles.track_play__album_link} href="http://">{currentTrack.author}</a>
+                      <a className={styles.track_play__album_link} href="http://">{currentTrack?.author}</a>
                     </div>
                   </div>
 

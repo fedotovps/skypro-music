@@ -4,6 +4,7 @@ import { Track } from "@/components/Main/Main.types";
 
 export default async function Home() {
   const tracks: Track[] = await getTracks();
+  
 
   return <Main tracks={tracks} />;
 }
