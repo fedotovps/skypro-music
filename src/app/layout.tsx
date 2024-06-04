@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ReduxProvider from "@/store/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +27,9 @@ export default function RootLayout({
           <link rel="stylesheet" href="css/style.css" />
           <title>Skypro</title>
         </head>
-      <body>{children}</body>
+        <ReduxProvider>
+          <body>{children}</body>
+        </ReduxProvider>
     </html>
   );
 }

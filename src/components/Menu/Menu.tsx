@@ -2,14 +2,15 @@
 import Image from "next/image";
 import styles from "./Menu.module.css";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setAuthState } from "@/store/features/authSlice";
+import { useAppSelector } from "@/store/store";
 
 export const Menu = () => {
   // создаем состояние для меню
   const [menu, setMenu] = React.useState<boolean>(false);
-
-  // const handleMenu: React.MouseEventHandler<HTMLButtonElement> = (prev) => {
-  //   setMenu((prev) => !prev);
-  // };
+  const dispatch = useDispatch();
+  const authState = useAppSelector((state) => state.auth.authState);
 
   return (
     <nav className={styles.main__nav}>
@@ -25,6 +26,7 @@ export const Menu = () => {
       <div
         onClick={() => {
           setMenu((prev) => !prev);
+          // dispatch(setAuthState(!authState));
         }}
         className={styles.nav__burger}
       >
