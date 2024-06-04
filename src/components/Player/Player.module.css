@@ -16,11 +16,7 @@
     flex-direction: column;
   }
   
-  .bar__player_progress {
-    width: 100%;
-    height: 5px;
-    background: #2e2e2e;
-  }
+  
   
   .bar__player_block {
     height: 73px;
@@ -128,6 +124,10 @@
     height: 12px;
     fill: transparent;
     stroke: #696969;
+  }
+
+  .player__btn_repeat_svg_active {
+    stroke: #d9d9d9;
   }
   
   .player__btn_shuffle {
@@ -297,4 +297,8 @@
   
   .volume__progress_line {
     width: 109px;
+  }
+  
+  ._btn {
+    cursor: pointer;
   }
