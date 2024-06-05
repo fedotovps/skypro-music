@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { Track } from "../Main/Main.types";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setCurrentTrack, setTracks } from "@/store/features/playerSlice";
+import { setCurrentTrack, setTracks, setTracksOrigin, setTracksShuffle } from "@/store/features/playerSlice";
 import { useAppSelector } from "@/store/store";
 
 type Centerblock = {
@@ -20,8 +20,6 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
   // Вытаскиваем состояние проигрывания из глобального состояния
   const isPlaying = useAppSelector((state) => state.player.isPlaying);
-  // Вытаскивает текущий плейлист из глобального состояния
-  const currentTrackList = useAppSelector((state) => state.player.tracks);
 
   // Функция конвертации секунд в формат с минутами
   const convertSecondsToTime = (seconds: number): string => {
@@ -31,9 +29,7 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
     return time;
   };
 
-
-
-  console.log(currentTrackList);
+  //console.log(currentTrackList);
   return (
     <div className={styles.main__centerblock}>
       <Search />
@@ -59,7 +55,7 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
         <div className={styles.content__playlist}>
           {tracks.map((track) => {
             return (
-              <div onClick={() => {dispatch(setCurrentTrack(track)), dispatch(setTracks(tracks))}} key={track.id} className={styles.playlist__item}>
+              <div onClick={() => {dispatch(setCurrentTrack(track)), dispatch(setTracks(tracks)), dispatch(setTracksOrigin(tracks))}} key={track.id} className={styles.playlist__item}>
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
                     <div className={styles.track__title_image}>

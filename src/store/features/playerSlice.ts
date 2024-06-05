@@ -6,6 +6,7 @@ type playerStateType = {
     tracks: Track[];
     currentTrack: Track | null;
     isPlaying: boolean;
+    tracksOrigin: Track[];
     tracksShuffle: Track[];
     isShuffle: boolean;
 }
@@ -14,6 +15,7 @@ const initialState: playerStateType = {
     tracks: [],
     currentTrack: null,
     isPlaying: false,
+    tracksOrigin: [],
     tracksShuffle: [],
     isShuffle: false,
 }
@@ -31,6 +33,9 @@ const playerSlice = createSlice({
         setIsPlaying: (state, action: PayloadAction<boolean>) => {
             state.isPlaying = action.payload;
         },
+        setTracksOrigin: (state, action: PayloadAction<Track[]>) => {
+            state.tracksOrigin = action.payload;
+        },
         setTracksShuffle: (state, action: PayloadAction<Track[]>) => {
             state.tracksShuffle = action.payload;
         },
@@ -44,6 +49,7 @@ export const {
     setTracks,
     setCurrentTrack,
     setIsPlaying,
+    setTracksOrigin,
     setTracksShuffle,
     setIsShuffle
 } = playerSlice.actions;

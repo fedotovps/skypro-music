@@ -18,6 +18,8 @@ export const Player = () => {
 
   // Вытаскивает текущий плейлист из глобального состояния
   const currentTrackList = useAppSelector((state) => state.player.tracks);
+  // Вытаскивает оригинальный плейлист из глобального состояния
+  const originTrackList = useAppSelector((state) => state.player.tracksOrigin);
   // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack); 
   // Находим индекс текущего трека
@@ -51,9 +53,20 @@ export const Player = () => {
   // Функция для включения режима перемешивания
   const toggleShuffle = () => {
     dispatch(setIsShuffle(!isShuffle));
-    // const shuffleTrackList = currentTrackList.sort(() => 0.5 - Math.random());
-    // dispatch(setTracks(shuffleTrackList));
   }
+
+  useEffect(() => {
+    if (isShuffle) {
+      const copyCurrentTrackList = [...currentTrackList];
+      const shuffleTrackList = copyCurrentTrackList.sort(() => 0.5 - Math.random());
+      //console.log(Object.isFrozen(currentTrackList));
+      dispatch(setTracks(shuffleTrackList));
+      console.log(shuffleTrackList);
+    } else {
+      dispatch(setTracks(originTrackList));
+      console.log(originTrackList);
+    }
+  }, [isShuffle])
   
   // Функция для воспроизведения и остановки трека
   const togglePlay = () => {
