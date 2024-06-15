@@ -1,24 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./Filter.module.css";
 import { Track } from "../Main/Main.types";
+import clsx from "clsx";
+import { useDispatch } from "react-redux";
+import { setFilters } from "@/store/features/playerSlice";
+import { useAppSelector } from "@/store/store";
 
 type FilterProps = {
-  tracksList: Track[];
+  apiTracks: Track[];
 };
 
-export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
+const Filter: React.FC<FilterProps> = ({ apiTracks }) => {
   // Состояние для фильтрации по исполнителям
   const [toggleExecutors, setToggleExecutors] = useState(false);
+  // Состояние для количества выбранных фильтров по исполнителям
+  const [arrExecutors, setArrExecutors] = useState<string[]>([]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setFilters({
+        author: arrExecutors,
+      })
+    );
+  }, [arrExecutors, dispatch]);
 
   // С помощью Set создаем множество с уникальными значениями author
-  const unicExecutors = [
-    ...new Set(
-      tracksList.map((el) => {
-        return el.author;
-      })
-    ),
-  ];
+  const unicExecutors = useMemo(() => {
+    return [
+      ...new Set(
+        apiTracks.map((el) => {
+          return el.author;
+        })
+      ),
+    ];
+  }, [apiTracks]);
 
   // Функция для изменения состояния по клику на фильтрацию исполнителя
   const handleExecutors = () => {
@@ -27,8 +45,25 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
     setToggleGenres(false);
   };
 
+  // Функция для фильтрации по исполнителю
+  const clickExecutor = useCallback(
+    (executorName: string) => {
+      if (arrExecutors.includes(executorName)) {
+        setArrExecutors((prevArr) =>
+          prevArr.filter((executor) => executor !== executorName)
+        );
+        return;
+      }
+      setArrExecutors((prevArr) => [...prevArr, executorName]);
+    },
+    [arrExecutors]
+  );
+
   // Состояние для фильтрации по годам
   const [toggleYears, setToggleYears] = useState(false);
+  const currentOrder = useAppSelector(
+    (state) => state.player.filterOptions.order
+  );
 
   // Функция для изменения состояния по клику на фильтрацию по годам
   const handleYears = () => {
@@ -37,16 +72,32 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
     setToggleGenres(false);
   };
 
+  const clickYears = (year: string) => {
+    dispatch(setFilters({ order: year }));
+  };
+
   // Состояние для фильтрации по жанрам
   const [toggleGenres, setToggleGenres] = useState(false);
+  // Состояние для количества выбранных фильтров по жанрам
+  const [arrGenres, setArrGenres] = useState<string[]>([]);
 
-  const unicGenres = [
-    ...new Set(
-      tracksList.map((el) => {
-        return el.genre;
+  useEffect(() => {
+    dispatch(
+      setFilters({
+        genre: arrGenres,
       })
-    ),
-  ];
+    );
+  }, [arrGenres, dispatch]);
+
+  const unicGenres = useMemo(() => {
+    return [
+      ...new Set(
+        apiTracks.map((el) => {
+          return el.genre;
+        })
+      ),
+    ];
+  }, [apiTracks]);
 
   // Функция для изменения состояния по клику на фильтрацию жанрам
   const handleGenres = () => {
@@ -54,6 +105,19 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
     setToggleYears(false);
     setToggleExecutors(false);
   };
+
+  const clickGenre = useCallback(
+    (genreTitle: string) => {
+      if (arrGenres.includes(genreTitle)) {
+        setArrGenres((prevArr) =>
+          prevArr.filter((genre) => genre !== genreTitle)
+        );
+        return;
+      }
+      setArrGenres((prevArr) => [...prevArr, genreTitle]);
+    },
+    [arrGenres]
+  );
 
   return (
     <div className={styles.centerblock__filter}>
@@ -67,6 +131,9 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
         }}
       >
         исполнителю
+        {arrExecutors.length > 0 && (
+          <div className={styles.count_executors}>{arrExecutors.length}</div>
+        )}
       </div>
       <div
         className={styles.filter__button}
@@ -87,25 +154,58 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
         }}
       >
         жанру
+        {arrGenres.length > 0 && (
+          <div className={styles.count_executors}>{arrGenres.length}</div>
+        )}
       </div>
 
       {toggleExecutors ? (
         <div className={styles.executors__modal}>
           {unicExecutors.map((el, index) => {
             return (
-              <div key={index} className={styles.modal_el}>
+              <div
+                key={index}
+                onClick={() => clickExecutor(el)}
+                className={clsx(
+                  styles.modal_el,
+                  arrExecutors.includes(el) && styles.modal_el_active
+                )}
+              >
                 {el}
               </div>
             );
           })}
         </div>
       ) : null}
-
       {toggleYears ? (
         <div className={styles.years__modal}>
-          <div className={styles.modal_el}>По умолчанию</div>
-          <div className={styles.modal_el}>Сначала новые</div>
-          <div className={styles.modal_el}>Сначала старые</div>
+          <div
+            onClick={() => clickYears("По умолчанию")}
+            className={clsx(
+              styles.modal_el,
+              currentOrder === "По умолчанию" && styles.modal_el_active
+            )}
+          >
+            По умолчанию
+          </div>
+          <div
+            onClick={() => clickYears("Сначала новые")}
+            className={clsx(
+              styles.modal_el,
+              currentOrder === "Сначала новые" && styles.modal_el_active
+            )}
+          >
+            Сначала новые
+          </div>
+          <div
+            onClick={() => clickYears("Сначала старые")}
+            className={clsx(
+              styles.modal_el,
+              currentOrder === "Сначала старые" && styles.modal_el_active
+            )}
+          >
+            Сначала старые
+          </div>
         </div>
       ) : null}
 
@@ -113,7 +213,14 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
         <div className={styles.genres__modal}>
           {unicGenres.map((el, index) => {
             return (
-              <div key={index} className={styles.modal_el}>
+              <div
+                onClick={() => clickGenre(el)}
+                key={index}
+                className={clsx(
+                  styles.modal_el,
+                  arrGenres.includes(el) && styles.modal_el_active
+                )}
+              >
                 {el}
               </div>
             );
@@ -123,3 +230,5 @@ export const Filter: React.FC<FilterProps> = ({ tracksList }) => {
     </div>
   );
 };
+
+export default React.memo(Filter);
