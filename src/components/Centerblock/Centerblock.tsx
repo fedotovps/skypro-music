@@ -1,20 +1,20 @@
 "use client";
-import { Filter } from "../Filter/Filter";
+import Filter from "../Filter/Filter";
 import { Search } from "../Search/Search";
 import styles from "./Centerblock.module.css";
 import clsx from "clsx";
 import { Track } from "../Main/Main.types";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setCurrentTrack, setTracks, setTracksOrigin, setTracksShuffle } from "@/store/features/playerSlice";
+import { setCurrentTrack } from "@/store/features/playerSlice";
 import { useAppSelector } from "@/store/store";
 
 type Centerblock = {
-  tracks: Track[];
+  filterTracks: Track[];
+  apiTracks: Track[];
 };
 
-export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
-
+const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
   const dispatch = useDispatch();
   // Вытаскивает текущий трек из глобального состояния
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
@@ -34,7 +34,7 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
     <div className={styles.main__centerblock}>
       <Search />
       <h2 className={styles.centerblock__h2}>Треки</h2>
-      <Filter tracksList={tracks} />
+      <Filter apiTracks={apiTracks} />
       <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={clsx(styles.playlist_title__col, styles.col01)}>
@@ -53,15 +53,30 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {tracks.map((track) => {
+          {filterTracks.map((track) => {
             return (
-              <div onClick={() => {dispatch(setCurrentTrack(track)), dispatch(setTracks(tracks)), dispatch(setTracksOrigin(tracks))}} key={track.id} className={styles.playlist__item}>
+              <div
+                onClick={() => {
+                  dispatch(setCurrentTrack(track));
+                }}
+                key={track.id}
+                className={styles.playlist__item}
+              >
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
                     <div className={styles.track__title_image}>
-                      {track.id === currentTrack?.id ? <div className={clsx(styles.playing_dot, isPlaying ? styles.playing_dot_animation : null)}></div> : <svg className={styles.track__title_svg}>
-                        <use href="img/icon/sprite.svg#icon-note"></use>
-                      </svg>}
+                      {track.id === currentTrack?.id ? (
+                        <div
+                          className={clsx(
+                            styles.playing_dot,
+                            isPlaying ? styles.playing_dot_animation : null
+                          )}
+                        ></div>
+                      ) : (
+                        <svg className={styles.track__title_svg}>
+                          <use href="img/icon/sprite.svg#icon-note"></use>
+                        </svg>
+                      )}
                     </div>
                     <div className={styles.track__title_text}>
                       <a className={styles.track__title_link}>
@@ -97,3 +112,5 @@ export const Centerblock : React.FC<Centerblock> = ( {tracks} ) => {
     </div>
   );
 };
+
+export default React.memo(Centerblock);
