@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./Player.module.css";
 import clsx from "clsx";
 import { ProgressBar } from "../ProgressBar/ProgressBar";
-import { Track } from "../Main/Main.types";
 import { useAppSelector } from "@/store/store";
 import { useDispatch } from "react-redux";
 import {

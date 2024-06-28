@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Centerblock Component renders correctly 1`] = `
+<div
+  className="centerblock__content"
+>
+  <div
+    className="content__title"
+  >
+    <div
+      className="playlist_title__col col01"
+    >
+      Трек
+    </div>
+    <div
+      className="playlist_title__col col02"
+    >
+      Исполнитель
+    </div>
+    <div
+      className="playlist_title__col col03"
+    >
+      Альбом
+    </div>
+    <div
+      className="playlist_title__col col04"
+    >
+      <svg
+        className="playlist_title__svg"
+      >
+        <use
+          href="img/icon/sprite.svg#icon-watch"
+        />
+      </svg>
+    </div>
+  </div>
+  <div
+    className="content__playlist"
+  >
+    <div
+      className="playlist__item"
+      onClick={[Function]}
+    >
+      <div
+        className="playlist__track"
+      >
+        <div
+          className="track__title"
+        >
+          <div
+            className="track__title_image"
+          >
+            <svg
+              className="track__title_svg"
+            >
+              <use
+                href="img/icon/sprite.svg#icon-note"
+              />
+            </svg>
+          </div>
+          <div
+            className="track__title_text"
+          >
+            <a
+              className="track__title_link"
+            >
+              Track 1
+              <span
+                className="track__title_span"
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          className="track__author"
+        >
+          <a
+            className="track__author_link"
+            href="http://"
+          >
+            Author 1
+          </a>
+        </div>
+        <div
+          className="track__album"
+        >
+          <a
+            className="track__album_link"
+            href="http://"
+          >
+            Album 1
+          </a>
+        </div>
+        <div
+          className="track__time"
+        >
+          <svg
+            className="track__time_svg"
+          >
+            <use
+              href="img/icon/sprite.svg#icon-like"
+            />
+          </svg>
+          <span
+            className="track__time_text"
+          >
+            3:00
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="playlist__item"
+      onClick={[Function]}
+    >
+      <div
+        className="playlist__track"
+      >
+        <div
+          className="track__title"
+        >
+          <div
+            className="track__title_image"
+          >
+            <svg
+              className="track__title_svg"
+            >
+              <use
+                href="img/icon/sprite.svg#icon-note"
+              />
+            </svg>
+          </div>
+          <div
+            className="track__title_text"
+          >
+            <a
+              className="track__title_link"
+            >
+              Track 2
+              <span
+                className="track__title_span"
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          className="track__author"
+        >
+          <a
+            className="track__author_link"
+            href="http://"
+          >
+            Author 2
+          </a>
+        </div>
+        <div
+          className="track__album"
+        >
+          <a
+            className="track__album_link"
+            href="http://"
+          >
+            Album 2
+          </a>
+        </div>
+        <div
+          className="track__time"
+        >
+          <svg
+            className="track__time_svg"
+          >
+            <use
+              href="img/icon/sprite.svg#icon-like"
+            />
+          </svg>
+          <span
+            className="track__time_text"
+          >
+            3:20
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
