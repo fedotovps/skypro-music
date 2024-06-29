@@ -47,10 +47,20 @@ describe('Корректный рендер компонента Centerblock', (
     },
   ];
 
-  it('renders correctly', () => {
+  it('Корректный рендер компонента Centerblock с треками', () => {
     const component = renderer.create(
       <Provider store={store}>
         <Centerblock allTracks={allTracks} error={null} isLoading={false} />
+      </Provider>
+    );
+    let tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('Дополнительный тест для проверки рендера состояния загрузки', () => {
+    const component = renderer.create(
+      <Provider store={store}>
+        <Centerblock allTracks={[]} error={null} isLoading={true} />
       </Provider>
     );
     let tree = component.toJSON();

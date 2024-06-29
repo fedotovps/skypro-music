@@ -36,10 +36,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
   //console.log(currentTrackList);
   return (
     <>
-      {/* <Search />
-      <h2 className={styles.centerblock__h2}>Треки</h2>
-      <Filter apiTracks={apiTracks} /> */}
-      <div className={styles.centerblock__content}>
+      {!isLoading ? "Загржаем треки" : <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={clsx(styles.playlist_title__col, styles.col01)}>
             Трек
@@ -65,6 +62,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
                 }}
                 key={track.id}
                 className={styles.playlist__item}
+                data-testid="track-item"
               >
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
@@ -82,24 +80,24 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
                         </svg>
                       )}
                     </div>
-                    <div className={styles.track__title_text}>
+                    <div className={styles.track__title_text} data-testid="track-name">
                       <a className={styles.track__title_link}>
                         {track.name}
                         <span className={styles.track__title_span}></span>
                       </a>
                     </div>
                   </div>
-                  <div className={styles.track__author}>
+                  <div className={styles.track__author} data-testid="track-author">
                     <a className={styles.track__author_link} href="http://">
                       {track.author}
                     </a>
                   </div>
-                  <div className={styles.track__album}>
+                  <div className={styles.track__album} data-testid="track-album">
                     <a className={styles.track__album_link} href="http://">
                       {track.album}
                     </a>
                   </div>
-                  <div className={styles.track__time}>
+                  <div className={styles.track__time} data-testid="track-duration">
                     <svg className={styles.track__time_svg}>
                       <use href="img/icon/sprite.svg#icon-like"></use>
                     </svg>
@@ -112,7 +110,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
             );
           })}
         </div>
-      </div>
+      </div>}
     </>
   );
 };
