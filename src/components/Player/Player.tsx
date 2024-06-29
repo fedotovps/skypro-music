@@ -148,6 +148,7 @@ export const Player = () => {
               </div>
               <div className={styles.player__btn_next}>
                 <svg
+                  data-testid="next-track-button"
                   onClick={nextTrackClick}
                   className={clsx(styles.player__btn_next_svg, styles._btn)}
                 >

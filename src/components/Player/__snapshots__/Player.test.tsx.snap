@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Корректный рендер компонента Player 1`] = `
+exports[`Корректный рендер компонента Player Корректный рендер компонента Player 1`] = `
 <div
   className="bar"
 >
@@ -69,6 +69,7 @@ exports[`Корректный рендер компонента Player 1`] = `
           >
             <svg
               className="player__btn_next_svg _btn"
+              data-testid="next-track-button"
               onClick={[Function]}
             >
               <use
