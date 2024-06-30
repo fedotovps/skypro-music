@@ -4,22 +4,26 @@ import { Search } from "../Search/Search";
 import styles from "./Centerblock.module.css";
 import clsx from "clsx";
 import { Track } from "../Main/Main.types";
-import React from "react";
+import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentTrack } from "@/store/features/playerSlice";
 import { useAppSelector } from "@/store/store";
 
-type Centerblock = {
-  filterTracks: Track[];
-  apiTracks: Track[];
-};
+type CenterblockProps = {
+  allTracks: Track[];
+  error: string | null;
+  isLoading: boolean;
+}
 
-const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
+const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
   const dispatch = useDispatch();
   // Вытаскивает текущий трек из глобального состояния
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
   // Вытаскиваем состояние проигрывания из глобального состояния
   const isPlaying = useAppSelector((state) => state.player.isPlaying);
+
+  
+  
 
   // Функция конвертации секунд в формат с минутами
   const convertSecondsToTime = (seconds: number): string => {
@@ -31,11 +35,8 @@ const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
 
   //console.log(currentTrackList);
   return (
-    <div className={styles.main__centerblock}>
-      <Search />
-      <h2 className={styles.centerblock__h2}>Треки</h2>
-      <Filter apiTracks={apiTracks} />
-      <div className={styles.centerblock__content}>
+    <>
+      {!isLoading ? "Загржаем треки" : <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={clsx(styles.playlist_title__col, styles.col01)}>
             Трек
@@ -48,12 +49,12 @@ const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
           </div>
           <div className={clsx(styles.playlist_title__col, styles.col04)}>
             <svg className={styles.playlist_title__svg}>
-              <use href="img/icon/sprite.svg#icon-watch"></use>
+              <use href="/img/icon/sprite.svg#icon-watch"></use>
             </svg>
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {filterTracks.map((track) => {
+          {allTracks.map((track) => {
             return (
               <div
                 onClick={() => {
@@ -61,6 +62,7 @@ const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
                 }}
                 key={track.id}
                 className={styles.playlist__item}
+                data-testid="track-item"
               >
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
@@ -74,30 +76,30 @@ const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
                         ></div>
                       ) : (
                         <svg className={styles.track__title_svg}>
-                          <use href="img/icon/sprite.svg#icon-note"></use>
+                          <use href="/img/icon/sprite.svg#icon-note"></use>
                         </svg>
                       )}
                     </div>
-                    <div className={styles.track__title_text}>
+                    <div className={styles.track__title_text} data-testid="track-name">
                       <a className={styles.track__title_link}>
                         {track.name}
                         <span className={styles.track__title_span}></span>
                       </a>
                     </div>
                   </div>
-                  <div className={styles.track__author}>
+                  <div className={styles.track__author} data-testid="track-author">
                     <a className={styles.track__author_link} href="http://">
                       {track.author}
                     </a>
                   </div>
-                  <div className={styles.track__album}>
+                  <div className={styles.track__album} data-testid="track-album">
                     <a className={styles.track__album_link} href="http://">
                       {track.album}
                     </a>
                   </div>
-                  <div className={styles.track__time}>
+                  <div className={styles.track__time} data-testid="track-duration">
                     <svg className={styles.track__time_svg}>
-                      <use href="img/icon/sprite.svg#icon-like"></use>
+                      <use href="/img/icon/sprite.svg#icon-like"></use>
                     </svg>
                     <span className={styles.track__time_text}>
                       {convertSecondsToTime(track.duration_in_seconds)}
@@ -108,8 +110,8 @@ const Centerblock: React.FC<Centerblock> = ({ filterTracks, apiTracks }) => {
             );
           })}
         </div>
-      </div>
-    </div>
+      </div>}
+    </>
   );
 };
 
