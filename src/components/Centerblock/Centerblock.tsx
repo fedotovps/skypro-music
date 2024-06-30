@@ -49,7 +49,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
           </div>
           <div className={clsx(styles.playlist_title__col, styles.col04)}>
             <svg className={styles.playlist_title__svg}>
-              <use href="img/icon/sprite.svg#icon-watch"></use>
+              <use href="/img/icon/sprite.svg#icon-watch"></use>
             </svg>
           </div>
         </div>
@@ -76,7 +76,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
                         ></div>
                       ) : (
                         <svg className={styles.track__title_svg}>
-                          <use href="img/icon/sprite.svg#icon-note"></use>
+                          <use href="/img/icon/sprite.svg#icon-note"></use>
                         </svg>
                       )}
                     </div>
@@ -99,7 +99,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
                   </div>
                   <div className={styles.track__time} data-testid="track-duration">
                     <svg className={styles.track__time_svg}>
-                      <use href="img/icon/sprite.svg#icon-like"></use>
+                      <use href="/img/icon/sprite.svg#icon-like"></use>
                     </svg>
                     <span className={styles.track__time_text}>
                       {convertSecondsToTime(track.duration_in_seconds)}

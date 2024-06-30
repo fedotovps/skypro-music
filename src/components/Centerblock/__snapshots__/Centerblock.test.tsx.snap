@@ -29,7 +29,7 @@ exports[`Корректный рендер компонента Centerblock До
         className="playlist_title__svg"
       >
         <use
-          href="img/icon/sprite.svg#icon-watch"
+          href="/img/icon/sprite.svg#icon-watch"
         />
       </svg>
     </div>
