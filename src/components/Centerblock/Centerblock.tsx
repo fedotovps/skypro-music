@@ -4,23 +4,31 @@ import { Search } from "../Search/Search";
 import styles from "./Centerblock.module.css";
 import clsx from "clsx";
 import { Track } from "../Main/Main.types";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setCurrentTrack } from "@/store/features/playerSlice";
+import { setCurrentTrack, setTracks } from "@/store/features/playerSlice";
 import { useAppSelector } from "@/store/store";
 
 type CenterblockProps = {
   allTracks: Track[];
-  error: string | null;
-  isLoading: boolean;
+  errorMessage: string | null;
 }
 
-const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
+const Centerblock = ({ allTracks, errorMessage } : CenterblockProps) => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setTracks(allTracks));
+  }, [dispatch, allTracks])
   // Вытаскивает текущий трек из глобального состояния
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
   // Вытаскиваем состояние проигрывания из глобального состояния
   const isPlaying = useAppSelector((state) => state.player.isPlaying);
+
+  //const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const filterTracks = useAppSelector((state) => state.player.filterPlaylist);
+  const memoizedFilterTracks = useMemo(() => filterTracks, [filterTracks]); 
 
   
   
@@ -36,7 +44,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
   //console.log(currentTrackList);
   return (
     <>
-      {!isLoading ? "Загржаем треки" : <div className={styles.centerblock__content}>
+      {errorMessage ? errorMessage : <div className={styles.centerblock__content}>
         <div className={styles.content__title}>
           <div className={clsx(styles.playlist_title__col, styles.col01)}>
             Трек
@@ -54,7 +62,7 @@ const Centerblock = ({ allTracks, error, isLoading } : CenterblockProps) => {
           </div>
         </div>
         <div className={styles.content__playlist}>
-          {allTracks.map((track) => {
+          {memoizedFilterTracks.map((track) => {
             return (
               <div
                 onClick={() => {

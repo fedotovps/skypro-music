@@ -10,6 +10,6 @@ export const playlistApi = async (id: string) => {
     if (!response.ok) {
         throw new Error("Ошибка в получении плейслистов");
     }
-    const data = response.json();
-    return data;
+    const data = await response.json();
+    return data.items;
 }
