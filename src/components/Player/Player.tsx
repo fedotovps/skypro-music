@@ -10,6 +10,7 @@ import {
   setIsPlaying,
   setIsShuffle,
 } from "@/store/features/playerSlice";
+import { useLikeTrack } from "@/hooks/likeTrack";
 
 export const Player = () => {
   // Получаем ссылку на DOM-элемент audio
@@ -25,6 +26,9 @@ export const Player = () => {
 
   // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
+
+    const {isLiked = false, handleLike = () => {}} = currentTrack ? useLikeTrack(currentTrack) : {};
+  
   // Находим индекс текущего трека
   const currentTrackIndex = currentTrackList.findIndex(
     (track) => track.id === currentTrack?.id
@@ -208,7 +212,7 @@ export const Player = () => {
                   className={clsx(styles.track_play__like, styles._btn_icon)}
                 >
                   <svg className={styles.track_play__like_svg}>
-                    <use href="/img/icon/sprite.svg#icon-like"></use>
+                    <use href="/img/icon/sprite.svg#icon-like"{isLiked}></use>
                   </svg>
                 </div>
                 <div

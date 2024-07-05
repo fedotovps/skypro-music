@@ -12,6 +12,7 @@ export const SignUp = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({email: "", password: "", username: ""});
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
@@ -31,7 +32,7 @@ export const SignUp = () => {
       ]);
       router.push("/signin");
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   }
     return (
@@ -71,6 +72,7 @@ export const SignUp = () => {
             <button className={styles.modal__btn_signup_ent} onClick={handleSubmit}>
               Зарегистрироваться
             </button>
+            {error && <div className={styles.error}>{error}</div>}
           </form>
         </div>
       </div>
