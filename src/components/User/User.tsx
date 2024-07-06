@@ -4,6 +4,7 @@ import styles from "./User.module.css";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setLogout } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
+import { clearLikedTracks } from "@/store/features/playerSlice";
 
 export const User = () => {
     const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ export const User = () => {
 
     const clickLogout = () => {
       dispatch(setLogout());
+      dispatch(clearLikedTracks());
     }
 
     return (

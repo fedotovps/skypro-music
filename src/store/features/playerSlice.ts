@@ -131,6 +131,9 @@ const playerSlice = createSlice({
     setDislikeTrack: (state, action: PayloadAction<Track>) => {
       state.likedTracks = state.likedTracks.filter((element) => element.id !== action.payload.id)
     },
+    clearLikedTracks: (state) => {
+      state.likedTracks = [];
+    },
   },
   extraReducers(builder) {
     builder.addCase(getFavoriteTraks.fulfilled, (state, action: PayloadAction<Track[]>) => {
@@ -147,7 +150,8 @@ export const {
   setIsShuffle,
   setFilters,
   setLikeTrack,
-  setDislikeTrack
+  setDislikeTrack,
+  clearLikedTracks,
 } = playerSlice.actions;
 
 export const playerReducer = playerSlice.reducer;
