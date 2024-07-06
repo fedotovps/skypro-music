@@ -27,7 +27,7 @@ export const Player = () => {
   // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
 
-    const {isLiked = false, handleLike = () => {}} = currentTrack ? useLikeTrack(currentTrack) : {};
+  const { isLiked, handleLike } = currentTrack ? useLikeTrack(currentTrack) : { isLiked: false, handleLike: () => {} };
   
   // Находим индекс текущего трека
   const currentTrackIndex = currentTrackList.findIndex(
@@ -211,17 +211,17 @@ export const Player = () => {
                 <div
                   className={clsx(styles.track_play__like, styles._btn_icon)}
                 >
-                  <svg className={styles.track_play__like_svg}>
-                    <use href="/img/icon/sprite.svg#icon-like"{isLiked}></use>
+                  <svg className={styles.track_play__like_svg} onClick={handleLike}>
+                    <use href={isLiked ? "/img/icon/sprite.svg#icon-dislike" : "/img/icon/sprite.svg#icon-like"}></use>
                   </svg>
                 </div>
-                <div
+                {/* <div
                   className={clsx(styles.track_play__dislike, styles._btn_icon)}
                 >
                   <svg className={styles.track_play__dislike_svg}>
                     <use href="/img/icon/sprite.svg#icon-dislike"></use>
                   </svg>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
