@@ -35,14 +35,14 @@ export const Menu = () => {
         <div className={styles.nav__menu}>
           <ul className={styles.menu__list}>
             <li className={styles.menu__item}>
-              <a href="#" className={styles.menu__link}>
+              <Link href="/tracks/" className={styles.menu__link}>
                 Главное
-              </a>
+              </Link>
             </li>
             <li className={styles.menu__item}>
-              <a href="#" className={styles.menu__link}>
+              {user && <Link href="/tracks/favourites/" className={styles.menu__link}>
                 Мой плейлист
-              </a>
+              </Link>}
             </li>
             <li className={styles.menu__item}>
               {!user && <Link className={styles.menu__link} href={"/signin"}>Войти</Link>}
