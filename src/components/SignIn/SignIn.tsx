@@ -9,20 +9,19 @@ import { getTokens, getAuthUser } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
 
 export const SignIn = () => {
-
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [formData, setFormData] = useState({email: "", password: ""});
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => {
       return {
-        ...prev, 
+        ...prev,
         [name]: value,
-      }
+      };
     });
   };
 
@@ -37,15 +36,20 @@ export const SignIn = () => {
     } catch (error) {
       setError("Неверный логин или пароль");
     }
-  }
-    return (
+  };
+  return (
     <div className={styles.wrapper}>
       <div className={styles.container_enter}>
         <div className={styles.modal__block}>
           <form className={styles.modal__form_login} action="#">
             <Link href="../">
               <div className={styles.modal__logo}>
-                <Image src="/img/logo_modal.png" alt="logo" width={140} height={21} />
+                <Image
+                  src="/img/logo_modal.png"
+                  alt="logo"
+                  width={140}
+                  height={21}
+                />
               </div>
             </Link>
             <input
@@ -75,5 +79,5 @@ export const SignIn = () => {
         </div>
       </div>
     </div>
-    );
-}
+  );
+};

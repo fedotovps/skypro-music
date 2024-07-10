@@ -11,39 +11,46 @@ export const SignUp = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const [formData, setFormData] = useState({email: "", password: "", username: ""});
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => {
       return {
-        ...prev, 
+        ...prev,
         [name]: value,
-      }
+      };
     });
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await Promise.all([
-        dispatch(getRegUser(formData)).unwrap(),
-      ]);
+      await Promise.all([dispatch(getRegUser(formData)).unwrap()]);
       router.push("/signin");
     } catch (error) {
       setError(error.message);
     }
-  }
-    return (
+  };
+  return (
     <div className={styles.wrapper}>
       <div className={styles.container_signup}>
         <div className={styles.modal__block}>
           <form className={styles.modal__form_login}>
             <Link href="../">
-            <div className={styles.modal__logo}>
-                <Image src="/img/logo_modal.png" alt="logo" width={140} height={21} />
-            </div>
+              <div className={styles.modal__logo}>
+                <Image
+                  src="/img/logo_modal.png"
+                  alt="logo"
+                  width={140}
+                  height={21}
+                />
+              </div>
             </Link>
             <input
               className={styles.modal__input}
@@ -69,7 +76,10 @@ export const SignUp = () => {
               onChange={handleChange}
               placeholder="Пароль"
             />
-            <button className={styles.modal__btn_signup_ent} onClick={handleSubmit}>
+            <button
+              className={styles.modal__btn_signup_ent}
+              onClick={handleSubmit}
+            >
               Зарегистрироваться
             </button>
             {error && <div className={styles.error}>{error}</div>}
@@ -77,5 +87,5 @@ export const SignUp = () => {
         </div>
       </div>
     </div>
-    );
-}
+  );
+};

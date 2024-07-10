@@ -8,7 +8,7 @@ export const getFavoriteTraks = createAsyncThunk(
     const favoriteTracks = await fetchFavoriteTraks(access);
     return favoriteTracks;
   }
-)
+);
 
 type playerStateType = {
   playlist: Track[];
@@ -69,7 +69,6 @@ const playerSlice = createSlice({
       } else {
         state.currentPlaylist = state.filterPlaylist;
       }
-      console.log(state.isShuffle);
     },
     setFilters: (
       state,
@@ -129,17 +128,22 @@ const playerSlice = createSlice({
       state.likedTracks.push(action.payload);
     },
     setDislikeTrack: (state, action: PayloadAction<Track>) => {
-      state.likedTracks = state.likedTracks.filter((element) => element.id !== action.payload.id)
+      state.likedTracks = state.likedTracks.filter(
+        (element) => element.id !== action.payload.id
+      );
     },
     clearLikedTracks: (state) => {
       state.likedTracks = [];
     },
   },
   extraReducers(builder) {
-    builder.addCase(getFavoriteTraks.fulfilled, (state, action: PayloadAction<Track[]>) => {
-      state.likedTracks = action.payload;
-    });
-  }
+    builder.addCase(
+      getFavoriteTraks.fulfilled,
+      (state, action: PayloadAction<Track[]>) => {
+        state.likedTracks = action.payload;
+      }
+    );
+  },
 });
 
 export const {

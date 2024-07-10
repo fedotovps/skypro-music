@@ -188,6 +188,10 @@
   color: #696969;
 }
 
+.track__time {
+  width: 66px;
+}
+
 .track__time_svg {
   width: 14px;
   height: 12px;

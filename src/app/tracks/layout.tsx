@@ -1,5 +1,5 @@
 "use client";
-import styles from "./layout.module.css"
+import styles from "./layout.module.css";
 import { Menu } from "@/components/Menu/Menu";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Player } from "@/components/Player/Player";
@@ -11,21 +11,19 @@ export default function TracksLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-    // Вытаскиваем состояние текущего трека
+  // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
-  console.log(currentTrack);
-  
+
   return (
     <div className={styles.wrapper}>
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <Menu />
-        {children}
-      </main>
-      {currentTrack && <Player />}
-      <footer className={styles.footer}></footer>
+      <div className={styles.container}>
+        <main className={styles.main}>
+          <Menu />
+          {children}
+        </main>
+        {currentTrack && <Player />}
+        <footer className={styles.footer}></footer>
+      </div>
     </div>
-  </div>
   );
 }

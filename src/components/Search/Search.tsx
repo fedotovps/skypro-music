@@ -20,9 +20,6 @@ export const Search = () => {
     },
     [dispatch]
   );
-
-  console.log(valueInput);
-
   return (
     <div className={styles.centerblock__search}>
       <svg className={styles.search__svg}>

@@ -11,58 +11,63 @@ import TrackItem from "../Track/Track";
 type CenterblockProps = {
   allTracks: Track[];
   errorMessage: string | null;
-}
+};
 
-const Centerblock = ({ allTracks, errorMessage } : CenterblockProps) => {
+const Centerblock = ({ allTracks, errorMessage }: CenterblockProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(setTracks(allTracks));
-  }, [dispatch, allTracks])
+  }, [dispatch, allTracks]);
   // Вытаскивает текущий трек из глобального состояния
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
   // Вытаскиваем состояние проигрывания из глобального состояния
   const isPlaying = useAppSelector((state) => state.player.isPlaying);
 
-  //const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const filterTracks = useAppSelector((state) => state.player.filterPlaylist);
-  const memoizedFilterTracks = useMemo(() => filterTracks, [filterTracks]); 
+  const memoizedFilterTracks = useMemo(() => filterTracks, [filterTracks]);
 
-  //console.log(currentTrackList);
   return (
     <>
-      {errorMessage ? errorMessage : <div className={styles.centerblock__content}>
-        <div className={styles.content__title}>
-          <div className={clsx(styles.playlist_title__col, styles.col01)}>
-            Трек
+      {errorMessage ? (
+        errorMessage
+      ) : (
+        <div className={styles.centerblock__content}>
+          <div className={styles.content__title}>
+            <div className={clsx(styles.playlist_title__col, styles.col01)}>
+              Трек
+            </div>
+            <div className={clsx(styles.playlist_title__col, styles.col02)}>
+              Исполнитель
+            </div>
+            <div className={clsx(styles.playlist_title__col, styles.col03)}>
+              Альбом
+            </div>
+            <div className={clsx(styles.playlist_title__col, styles.col04)}>
+              <svg className={styles.playlist_title__svg}>
+                <use href="/img/icon/sprite.svg#icon-watch"></use>
+              </svg>
+            </div>
           </div>
-          <div className={clsx(styles.playlist_title__col, styles.col02)}>
-            Исполнитель
-          </div>
-          <div className={clsx(styles.playlist_title__col, styles.col03)}>
-            Альбом
-          </div>
-          <div className={clsx(styles.playlist_title__col, styles.col04)}>
-            <svg className={styles.playlist_title__svg}>
-              <use href="/img/icon/sprite.svg#icon-watch"></use>
-            </svg>
+          <div className={styles.content__playlist}>
+            {memoizedFilterTracks.length > 0 ? (
+              memoizedFilterTracks.map((track) => {
+                return (
+                  <TrackItem
+                    key={track.id}
+                    track={track}
+                    isCurrentTrack={track.id === currentTrack?.id}
+                    isPlaying={isPlaying}
+                    onClick={() => dispatch(setCurrentTrack(track))}
+                  />
+                );
+              })
+            ) : (
+              <span>Треки не найдены</span>
+            )}
           </div>
         </div>
-        <div className={styles.content__playlist}>
-          {memoizedFilterTracks.map((track) => {
-            return (
-              <TrackItem
-                key={track.id}
-                track={track}
-                isCurrentTrack={track.id === currentTrack?.id}
-                isPlaying={isPlaying}
-                onClick={() => dispatch(setCurrentTrack(track))}
-                />
-            );
-          })}
-        </div>
-      </div>}
+      )}
     </>
   );
 };

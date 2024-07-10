@@ -7,29 +7,29 @@ import { useRouter } from "next/navigation";
 import { clearLikedTracks } from "@/store/features/playerSlice";
 
 export const User = () => {
-    const dispatch = useAppDispatch();
-    const router = useRouter();
-    useInitializeLikedTraks();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  useInitializeLikedTraks();
 
-    const userName = useAppSelector((state) => state.auth.user?.username);
+  const userName = useAppSelector((state) => state.auth.user?.username);
 
-    if (!userName) {
-        return null;
-    }
+  if (!userName) {
+    return null;
+  }
 
-    const clickLogout = () => {
-      dispatch(setLogout());
-      dispatch(clearLikedTracks());
-    }
+  const clickLogout = () => {
+    dispatch(setLogout());
+    dispatch(clearLikedTracks());
+  };
 
-    return (
-            <div className={styles.sidebar__personal}>
-              <p className={styles.sidebar__personal_name}>{userName}</p>
-              <div className={styles.sidebar__icon}>
-                <svg onClick={clickLogout}>
-                  <use href="img/icon/sprite.svg#logout"></use>
-                </svg>
-              </div>
-            </div> 
-    );
-}
+  return (
+    <div className={styles.sidebar__personal}>
+      <p className={styles.sidebar__personal_name}>{userName}</p>
+      <div className={styles.sidebar__icon}>
+        <svg onClick={clickLogout}>
+          <use href="img/icon/sprite.svg#logout"></use>
+        </svg>
+      </div>
+    </div>
+  );
+};

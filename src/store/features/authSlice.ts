@@ -4,42 +4,42 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const getAuthUser = createAsyncThunk(
   "user/getAuthUser",
-  async ({email, password}: SignInFormType) => {
-    const user = await fetchUser({email, password});
+  async ({ email, password }: SignInFormType) => {
+    const user = await fetchUser({ email, password });
     return user;
   }
 );
 
 export const getRegUser = createAsyncThunk(
   "user/getRegUser",
-  async ({email, password, username}: SignUpFormType) => {
-    const user = await fetchAddUser({email, password, username});
+  async ({ email, password, username }: SignUpFormType) => {
+    const user = await fetchAddUser({ email, password, username });
     return user;
   }
 );
 
 export const getTokens = createAsyncThunk(
   "user/getTokens",
-  async ({email, password}: SignInFormType) => {
-    const tokens = await fetchTokens({email, password});
+  async ({ email, password }: SignInFormType) => {
+    const tokens = await fetchTokens({ email, password });
     return tokens;
   }
 );
 
-type AuthStateType =  {
+type AuthStateType = {
   user: null | UserType;
   tokens: {
     access: string | null;
     refresh: string | null;
-  }
-}
+  };
+};
 
 const initialState: AuthStateType = {
   user: null,
   tokens: {
     access: null,
     refresh: null,
-  }
+  },
 };
 
 const authSlice = createSlice({
@@ -50,22 +50,30 @@ const authSlice = createSlice({
       state.user = null;
       state.tokens.access = null;
       state.tokens.refresh = null;
-    }
-    // setAuthState: (state, action: PayloadAction<boolean>) => {
-    //   state.authState = action.payload;
-    // },
+    },
   },
   extraReducers(builder) {
-    builder.addCase(getAuthUser.fulfilled, (state, action: PayloadAction<UserType>) => {
-      state.user = action.payload
-    }).addCase(getTokens.fulfilled, (state, action: PayloadAction<{
-      access: string | null;
-      refresh: string | null;
-    }>) => {
-      state.tokens.access = action.payload.access;
-      state.tokens.refresh = action.payload.refresh;
-    });
-  }
+    builder
+      .addCase(
+        getAuthUser.fulfilled,
+        (state, action: PayloadAction<UserType>) => {
+          state.user = action.payload;
+        }
+      )
+      .addCase(
+        getTokens.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            access: string | null;
+            refresh: string | null;
+          }>
+        ) => {
+          state.tokens.access = action.payload.access;
+          state.tokens.refresh = action.payload.refresh;
+        }
+      );
+  },
 });
 
 export const { setLogout } = authSlice.actions;
