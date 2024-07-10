@@ -3,7 +3,7 @@ import Link from "next/link";
 import styles from "./SignIn.module.css";
 import clsx from "clsx";
 import Image from "next/image";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { useAppDispatch } from "@/store/store";
 import { getTokens, getAuthUser } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
