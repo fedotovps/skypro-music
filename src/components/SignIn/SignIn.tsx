@@ -1,12 +1,13 @@
 "use client";
-import Link from "next/link";
-import styles from "./SignIn.module.css";
-import clsx from "clsx";
-import Image from "next/image";
 import React, { useState } from "react";
 import { useAppDispatch } from "@/store/store";
-import { getTokens, getAuthUser } from "@/store/features/authSlice";
+import { setTokens, setUser } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import Image from "next/image";
+import clsx from "clsx";
+import styles from "./SignIn.module.css";
 
 export const SignIn = () => {
   const dispatch = useAppDispatch();
@@ -17,26 +18,53 @@ export const SignIn = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
-      await Promise.all([
-        dispatch(getAuthUser(formData)).unwrap(),
-        dispatch(getTokens(formData)).unwrap(),
-      ]);
-      router.push("/");
-    } catch (error) {
+
+    const result = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    });
+
+    if (!result || result.error) {
       setError("Неверный логин или пароль");
+    } else {
+      // Ждем, пока токены будут добавлены в куки
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Обновляем сессию
+      const updatedSession = await getSessionFromServer();
+
+      // Проверяем токены и обновляем стора
+      if (updatedSession) {
+        const accessToken = updatedSession.accessToken;
+        const user = updatedSession.user;
+        const name = user?.name;
+        const email = user?.email;
+        
+        if (accessToken && name && email) {
+          dispatch(setTokens({ accessToken }));
+          dispatch(setUser({ name, email }));
+          router.push("/");
+        } else {
+          setError("Не удалось получить токены");
+        }
+      }
     }
   };
+
+  const getSessionFromServer = async () => {
+    const res = await fetch("/api/auth/session");
+    if (res.ok) {
+      return await res.json();
+    }
+    return null;
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container_enter}>
