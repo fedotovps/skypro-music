@@ -1,5 +1,5 @@
-import { fetchAddFavoriteTraks, fetchDeleteFavoriteTraks } from "@/actions";
-import { fetchFavoriteTraks } from "@/api/userApi";
+
+import { fetchAddFavoriteTraks, fetchDeleteFavoriteTraks, fetchFavoriteTraks } from "@/api/userApi";
 import { Track } from "@/components/Main/Main.types";
 import { setDislikeTrack, setLikeTrack } from "@/store/features/playerSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";

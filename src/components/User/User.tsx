@@ -2,47 +2,29 @@
 import { useInitializeLikedTraks } from "@/hooks/likes";
 import styles from "./User.module.css";
 import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setLogout } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
 import { clearLikedTracks } from "@/store/features/playerSlice";
-import { clearAuth, setTokens, setUser } from "@/store/features/authSlice";
-import { signOut, useSession } from "next-auth/react";
-import { useEffect } from "react";
 
 export const User = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   useInitializeLikedTraks();
 
-  const user = useAppSelector((state) => state.auth.user);
-  const { data: session } = useSession();
+  const userName = useAppSelector((state) => state.auth.user?.username);
 
-  useEffect(() => {
-    if (session) {
-      const accessToken = session.accessToken;
-      const name = session.user.name;
-      const email = session.user.email;
-
-      if (accessToken && name && email) {
-        dispatch(setTokens({ accessToken }));
-        dispatch(setUser({ name, email }));
-      }
-    }
-  }, [session, dispatch]);
-  
-  
-  if (!user) {
+  if (!userName) {
     return null;
   }
 
   const clickLogout = () => {
-    dispatch(clearAuth());
+    dispatch(setLogout());
     dispatch(clearLikedTracks());
-    signOut();
   };
 
   return (
     <div className={styles.sidebar__personal}>
-      <p className={styles.sidebar__personal_name}>{user.name}</p>
+      <p className={styles.sidebar__personal_name}>{userName}</p>
       <div className={styles.sidebar__icon}>
         <svg onClick={clickLogout}>
           <use href="/img/icon/sprite.svg#logout"></use>

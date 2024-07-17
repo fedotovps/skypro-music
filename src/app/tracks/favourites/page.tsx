@@ -1,33 +1,39 @@
+"use client";
 import Centerblock from "@/components/Centerblock/Centerblock"
 import Filter from "@/components/Filter/Filter"
 import styles from "../layout.module.css";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { Search } from "@/components/Search/Search";
 import { Track } from "@/components/Main/Main.types";
+import { useAppSelector } from "@/store/store";
 import { fetchFavoriteTraks } from "@/api/userApi";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../configs/auth";
+import { useEffect, useState } from "react";
 
-const FavouritesTracksPage = async () => {
+const FavouritesTracksPage = () => {
 
-    const session = await getServerSession(authOptions); // Получаем сессию на серверной стороне
-    
-    const token = session?.accessToken;
-    
-    let tracks: Track[] = [];
+    const stateFavTracks: Track[] = useAppSelector((state) => state.player.likedTracks);
+    const token = useAppSelector((state) => state.auth.tokens.access);
+
+    const [tracks, setTracks] = useState<Track[]>([]);
     let errorMessage: string | null = null;
 
-
+    useEffect(() => {
+        const fetchFavouritesTracks = async () => {
+            if (!token) {
+                return;
+            }
             try {
-                if (token) {
-                    tracks = await fetchFavoriteTraks(token);
-                }
+                const fetchedTracks = await fetchFavoriteTraks(token);
+                setTracks(fetchedTracks);
             } catch (err: unknown) {
                 errorMessage =
                 err instanceof Error
                     ? "Возникли проблемы при загрузке треков: " + err.message
                     : "Неизвестная ошибка";
             };
+        };
+        fetchFavouritesTracks();
+    }, [token, stateFavTracks]);
 
     return (
         <>
@@ -42,5 +48,4 @@ const FavouritesTracksPage = async () => {
     
 )
 }
-
 export default FavouritesTracksPage;

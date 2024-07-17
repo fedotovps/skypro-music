@@ -2,8 +2,25 @@ import { fetchAddUser, fetchTokens, fetchUser } from "@/api/userApi";
 import { SignInFormType, SignUpFormType, UserType } from "@/types/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Функция для извлечения данных из LocalStorage
+const loadUserFromLocalStorage = (): UserType | null => {
+  const userJson = localStorage.getItem("user");
+  return userJson ? JSON.parse(userJson) : null;
+};
 
+// Функция для сохранения данных в LocalStorage
+const saveUserToLocalStorage = (user: UserType): void => {
+  localStorage.setItem("user", JSON.stringify(user));
+};
 
+export const getAuthUser = createAsyncThunk(
+  "user/getAuthUser",
+  async ({ email, password }: SignInFormType) => {
+    const user = await fetchUser({ email, password });
+    saveUserToLocalStorage(user);
+    return user;
+  }
+);
 export const getRegUser = createAsyncThunk(
   "user/getRegUser",
   async ({ email, password, username }: SignUpFormType) => {
@@ -11,9 +28,17 @@ export const getRegUser = createAsyncThunk(
     return user;
   }
 );
-
+export const getTokens = createAsyncThunk(
+  "user/getTokens",
+  async ({ email, password }: SignInFormType) => {
+    const tokens = await fetchTokens({ email, password });
+    localStorage.setItem("access_token", tokens.access);
+    localStorage.setItem("refresh_token", tokens.refresh);
+    return tokens;
+  }
+);
 type AuthStateType = {
-  user: { name: string; email: string } | null;
+  user: null | UserType;
   tokens: {
     access: string | null;
     refresh: string | null;
@@ -21,30 +46,48 @@ type AuthStateType = {
 };
 
 const initialState: AuthStateType = {
-  user: null,
+  user: loadUserFromLocalStorage(),
   tokens: {
-    access: null,
-    refresh: null,
+    access: localStorage.getItem("access_token") || null,
+    refresh: localStorage.getItem("refresh_token") || null,
   },
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    setTokens: (state, action: PayloadAction<{ accessToken: string}>) => {
-      state.tokens.access = action.payload.accessToken;
-    },
-    setUser: (state, action: PayloadAction<{ name: string; email: string }>) => {
-      state.user = action.payload;
-    },
-    clearAuth: (state) => {
+    setLogout: (state) => {
+      state.user = null;
       state.tokens.access = null;
       state.tokens.refresh = null;
-      state.user = null;
+      localStorage.removeItem("user");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
     },
   },
+  extraReducers(builder) {
+    builder
+      .addCase(
+        getAuthUser.fulfilled,
+        (state, action: PayloadAction<UserType>) => {
+          state.user = action.payload;
+        }
+      )
+      .addCase(
+        getTokens.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            access: string | null;
+            refresh: string | null;
+          }>
+        ) => {
+          state.tokens.access = action.payload.access;
+          state.tokens.refresh = action.payload.refresh;
+        }
+      );
+  },
 });
-
-export const { setTokens, setUser, clearAuth } = authSlice.actions;
+export const { setLogout } = authSlice.actions;
 export const authReducer = authSlice.reducer;
