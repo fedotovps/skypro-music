@@ -5,6 +5,9 @@ import { useEffect } from "react";
 export const useInitializeLikedTraks = () => {
   const dispatch = useAppDispatch();
   const tokens = useAppSelector((state) => state.auth.tokens);
+  
+  //console.log(tokens);
+  
 
   useEffect(() => {
     if (tokens.access) {

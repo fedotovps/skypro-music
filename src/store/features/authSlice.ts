@@ -2,12 +2,6 @@ import { fetchAddUser, fetchTokens, fetchUser } from "@/api/userApi";
 import { SignInFormType, SignUpFormType, UserType } from "@/types/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Функция для извлечения данных из LocalStorage
-const loadUserFromLocalStorage = (): UserType | null => {
-  const userJson = localStorage.getItem("user");
-  return userJson ? JSON.parse(userJson) : null;
-};
-
 // Функция для сохранения данных в LocalStorage
 const saveUserToLocalStorage = (user: UserType): void => {
   localStorage.setItem("user", JSON.stringify(user));
@@ -46,10 +40,10 @@ type AuthStateType = {
 };
 
 const initialState: AuthStateType = {
-  user: loadUserFromLocalStorage(),
+  user: null,
   tokens: {
-    access: localStorage.getItem("access_token") || null,
-    refresh: localStorage.getItem("refresh_token") || null,
+    access: null,
+    refresh: null,
   },
 };
 
@@ -57,6 +51,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setUser: (state, action: PayloadAction<UserType>) => {
+      state.user = action.payload;
+    },
+    setToken: (state, action: PayloadAction<{
+      access: string | null;
+      refresh: string | null;
+    }>) => {
+      state.tokens = action.payload;
+    },
     setLogout: (state) => {
       state.user = null;
       state.tokens.access = null;
@@ -89,5 +92,5 @@ const authSlice = createSlice({
       );
   },
 });
-export const { setLogout } = authSlice.actions;
+export const { setUser, setToken, setLogout } = authSlice.actions;
 export const authReducer = authSlice.reducer;
