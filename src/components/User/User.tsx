@@ -3,12 +3,10 @@ import { useInitializeLikedTraks } from "@/hooks/likes";
 import styles from "./User.module.css";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setLogout } from "@/store/features/authSlice";
-import { useRouter } from "next/navigation";
 import { clearLikedTracks } from "@/store/features/playerSlice";
 
 export const User = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   useInitializeLikedTraks();
 
   const userName = useAppSelector((state) => state.auth.user?.username);

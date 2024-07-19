@@ -40,12 +40,18 @@ export const Menu = () => {
               </Link>
             </li>
             <li className={styles.menu__item}>
-              {user && <Link href="/tracks/favourites/" className={styles.menu__link}>
-                Мой плейлист
-              </Link>}
+              {user && (
+                <Link href="/tracks/favourites/" className={styles.menu__link}>
+                  Мой плейлист
+                </Link>
+              )}
             </li>
             <li className={styles.menu__item}>
-              {!user && <Link className={styles.menu__link} href={"/signin"}>Войти</Link>}
+              {!user && (
+                <Link className={styles.menu__link} href={"/signin"}>
+                  Войти
+                </Link>
+              )}
             </li>
           </ul>
         </div>
