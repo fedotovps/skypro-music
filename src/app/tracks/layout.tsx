@@ -2,6 +2,7 @@
 import styles from "./layout.module.css";
 import { Menu } from "@/components/Menu/Menu";
 import { Player } from "@/components/Player/Player";
+import { useInitializeLikedTraks } from "@/hooks/likes";
 import { useAppSelector } from "@/store/store";
 
 export default function TracksLayout({
@@ -11,7 +12,7 @@ export default function TracksLayout({
 }>) {
   // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
-
+  useInitializeLikedTraks();
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>

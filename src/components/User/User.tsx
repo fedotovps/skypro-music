@@ -1,5 +1,4 @@
 "use client";
-import { useInitializeLikedTraks } from "@/hooks/likes";
 import styles from "./User.module.css";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setLogout, setToken, setUser } from "@/store/features/authSlice";
@@ -39,8 +38,6 @@ export const User = () => {
       dispatch(setToken(storedToken));
     }
   }, [dispatch]);
-
-  useInitializeLikedTraks();
 
   if (!user) {
     return null;
