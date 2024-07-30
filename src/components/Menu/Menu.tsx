@@ -1,16 +1,14 @@
 "use client";
 import Image from "next/image";
 import styles from "./Menu.module.css";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setAuthState } from "@/store/features/authSlice";
+import React from "react";
+import Link from "next/link";
 import { useAppSelector } from "@/store/store";
 
 export const Menu = () => {
   // создаем состояние для меню
   const [menu, setMenu] = React.useState<boolean>(false);
-  const dispatch = useDispatch();
-  const authState = useAppSelector((state) => state.auth.authState);
+  const user = useAppSelector((state) => state.auth.user);
 
   return (
     <nav className={styles.main__nav}>
@@ -26,7 +24,6 @@ export const Menu = () => {
       <div
         onClick={() => {
           setMenu((prev) => !prev);
-          // dispatch(setAuthState(!authState));
         }}
         className={styles.nav__burger}
       >
@@ -38,19 +35,23 @@ export const Menu = () => {
         <div className={styles.nav__menu}>
           <ul className={styles.menu__list}>
             <li className={styles.menu__item}>
-              <a href="#" className={styles.menu__link}>
+              <Link href="/tracks/" className={styles.menu__link}>
                 Главное
-              </a>
+              </Link>
             </li>
             <li className={styles.menu__item}>
-              <a href="#" className={styles.menu__link}>
-                Мой плейлист
-              </a>
+              {user && (
+                <Link href="/tracks/favourites/" className={styles.menu__link}>
+                  Мой плейлист
+                </Link>
+              )}
             </li>
             <li className={styles.menu__item}>
-              <a href="../signin.html" className={styles.menu__link}>
-                Войти
-              </a>
+              {!user && (
+                <Link className={styles.menu__link} href={"/signin"}>
+                  Войти
+                </Link>
+              )}
             </li>
           </ul>
         </div>

@@ -10,6 +10,7 @@ import {
   setIsPlaying,
   setIsShuffle,
 } from "@/store/features/playerSlice";
+import { useLikeTrack } from "@/hooks/likeTrack";
 
 export const Player = () => {
   // Получаем ссылку на DOM-элемент audio
@@ -25,6 +26,11 @@ export const Player = () => {
 
   // Вытаскиваем состояние текущего трека
   const currentTrack = useAppSelector((state) => state.player.currentTrack);
+
+  const { isLiked, handleLike } = currentTrack
+    ? useLikeTrack(currentTrack)
+    : { isLiked: false, handleLike: () => {} };
+
   // Находим индекс текущего трека
   const currentTrackIndex = currentTrackList.findIndex(
     (track) => track.id === currentTrack?.id
@@ -73,8 +79,6 @@ export const Player = () => {
 
   // Функция для воспроизведения следующего трека
   const nextTrackClick = () => {
-    console.log(currentTrackList);
-
     if (currentTrackIndex < currentTrackList.length - 1) {
       const nextTrack = currentTrackList[currentTrackIndex + 1];
       dispatch(setCurrentTrack(nextTrack));
@@ -95,12 +99,6 @@ export const Player = () => {
       audio.volume = parseFloat(isVolume);
     }
   }, [isVolume]);
-
-  // useEffect(() => {
-  //   audio?.addEventListener("ended", handleEnded);
-  //   isPlaying ? audio?.play() : null;
-  //   return () => audio?.removeEventListener("ended", handleEnded);
-  // }, [currentTrackId, tracks])
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -207,15 +205,17 @@ export const Player = () => {
                 <div
                   className={clsx(styles.track_play__like, styles._btn_icon)}
                 >
-                  <svg className={styles.track_play__like_svg}>
-                    <use href="/img/icon/sprite.svg#icon-like"></use>
-                  </svg>
-                </div>
-                <div
-                  className={clsx(styles.track_play__dislike, styles._btn_icon)}
-                >
-                  <svg className={styles.track_play__dislike_svg}>
-                    <use href="/img/icon/sprite.svg#icon-dislike"></use>
+                  <svg
+                    className={styles.track_play__like_svg}
+                    onClick={handleLike}
+                  >
+                    <use
+                      href={
+                        isLiked
+                          ? "/img/icon/sprite.svg#icon-dislike"
+                          : "/img/icon/sprite.svg#icon-like"
+                      }
+                    ></use>
                   </svg>
                 </div>
               </div>

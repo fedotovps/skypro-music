@@ -1,8 +1,14 @@
+import { fetchFavoriteTraks } from "@/api/userApi";
 import { Track } from "@/components/Main/Main.types";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { stat } from "fs";
-import { act } from "react";
-import { useMemo } from "react";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+export const getFavoriteTraks = createAsyncThunk(
+  "playlist/getFavoriteTraks",
+  async (access: string) => {
+    const favoriteTracks = await fetchFavoriteTraks(access);
+    return favoriteTracks;
+  }
+);
 
 type playerStateType = {
   playlist: Track[];
@@ -17,6 +23,7 @@ type playerStateType = {
   };
   filterPlaylist: Track[];
   currentPlaylist: Track[];
+  likedTracks: Track[];
 };
 
 const initialState: playerStateType = {
@@ -32,6 +39,7 @@ const initialState: playerStateType = {
   },
   filterPlaylist: [],
   currentPlaylist: [],
+  likedTracks: [],
 };
 
 const playerSlice = createSlice({
@@ -61,7 +69,6 @@ const playerSlice = createSlice({
       } else {
         state.currentPlaylist = state.filterPlaylist;
       }
-      console.log(state.isShuffle);
     },
     setFilters: (
       state,
@@ -117,6 +124,25 @@ const playerSlice = createSlice({
       state.filterPlaylist = filterTracks;
       state.currentPlaylist = filterTracks;
     },
+    setLikeTrack: (state, action: PayloadAction<Track>) => {
+      state.likedTracks.push(action.payload);
+    },
+    setDislikeTrack: (state, action: PayloadAction<Track>) => {
+      state.likedTracks = state.likedTracks.filter(
+        (element) => element.id !== action.payload.id
+      );
+    },
+    clearLikedTracks: (state) => {
+      state.likedTracks = [];
+    },
+  },
+  extraReducers(builder) {
+    builder.addCase(
+      getFavoriteTraks.fulfilled,
+      (state, action: PayloadAction<Track[]>) => {
+        state.likedTracks = action.payload;
+      }
+    );
   },
 });
 
@@ -127,6 +153,9 @@ export const {
   setIsPlaying,
   setIsShuffle,
   setFilters,
+  setLikeTrack,
+  setDislikeTrack,
+  clearLikedTracks,
 } = playerSlice.actions;
 
 export const playerReducer = playerSlice.reducer;
